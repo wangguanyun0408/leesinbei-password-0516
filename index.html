@@ -3,70 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>專屬生日祝福</title>
+    <title>李芯貝同學，專屬生日祝福</title>
     <style>
-        /* 基礎設定 */
+        /* 基礎設定 - 用最穩健的方式將所有內容置中 */
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
-            background-color: #04030d; /* 更深的午夜藍底色 */
-            color: white;
+            font-family: 'Segoe UI', 'Microsoft JhengHei', 'Open Sans', sans-serif;
             overflow: hidden;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            background-color: #fce4ec; /* 初始粉色背景 */
         }
 
-        /* --- 登入介面樣式 --- */
+        /* --- 1. 登入介面樣式 - 粉彩玻璃擬態 --- */
+        #login-state-wrapper {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* 粉彩漸層背景 */
+            background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 50%, #f48fb1 100%);
+            z-index: 100;
+            transition: opacity 1.5s ease-out;
+        }
+        
+        #login-state-wrapper.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+
         #login-container {
             text-align: center;
-            background: rgba(255, 255, 255, 0.08);
-            padding: 50px 40px;
-            border-radius: 20px;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 0 40px rgba(212, 93, 106, 0.2);
-            z-index: 10;
+            background: rgba(255, 255, 255, 0.05); /* 超低透明度 */
+            padding: 60px 50px;
+            border-radius: 25px;
+            backdrop-filter: blur(25px); /* 高度模糊 */
+            -webkit-backdrop-filter: blur(25px);
+            box-shadow: 0 0 50px rgba(212, 93, 106, 0.15);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        #login-container h1 { font-size: 1.8rem; margin-bottom: 10px; font-weight: normal; letter-spacing: 2px;}
-        #login-container p { color: #ccc; margin-bottom: 25px; letter-spacing: 1px;}
+        /* 登入盒子的動物 emoji ( placeholder 圖片 ) */
+        .login-emoji-placeholder {
+            width: 130px;
+            height: 130px;
+            background-color: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 80px;
+            margin-bottom: 25px;
+            color: #d45d6a;
+            box-shadow: 0 0 20px rgba(212, 93, 106, 0.3);
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        #login-container h1 { 
+            font-size: 2.2rem; 
+            margin: 0 0 15px 0; 
+            font-weight: normal; 
+            letter-spacing: 3px; 
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        #login-container p { 
+            color: #eeeeee; 
+            margin: 0 0 35px 0; 
+            letter-spacing: 1.5px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
 
         input {
-            padding: 12px; margin-bottom: 20px; border: none;
-            border-radius: 8px; font-size: 16px; width: 80%;
+            padding: 15px; margin-bottom: 25px; border: none;
+            border-radius: 12px; font-size: 18px; width: 300px;
             text-align: center; background: rgba(255, 255, 255, 0.85);
             outline: none;
             transition: 0.3s;
+            color: #d45d6a;
+            letter-spacing: 5px; /* 密碼寬度 */
         }
         
-        input:focus { background: rgba(255, 255, 255, 1); box-shadow: 0 0 15px rgba(212, 93, 106, 0.5); }
+        input:focus { background: rgba(255, 255, 255, 1); box-shadow: 0 0 20px rgba(212, 93, 106, 0.6); }
 
         .btn {
-            padding: 12px 35px;
-            background: linear-gradient(135deg, #852d6a, #d45d6a);
-            border: none; border-radius: 25px; color: white;
-            font-size: 16px; font-weight: bold; cursor: pointer;
-            transition: 0.3s; box-shadow: 0 4px 15px rgba(212, 93, 106, 0.4);
-            letter-spacing: 1px;
+            padding: 15px 45px;
+            background: linear-gradient(135deg, #d45d6a, #c2185b);
+            border: none; border-radius: 30px; color: white;
+            font-size: 18px; font-weight: bold; cursor: pointer;
+            transition: 0.3s; box-shadow: 0 6px 20px rgba(212, 93, 106, 0.4);
+            letter-spacing: 2px;
         }
 
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 6px 25px rgba(212, 93, 106, 0.7); }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(212, 93, 106, 0.7); }
 
-        #error-msg { color: #ff6b6b; margin-top: 15px; font-size: 0.9rem; display: none; }
+        #error-msg { color: #ffffff; margin-top: 20px; font-size: 1rem; display: none; text-shadow: 0 1px 3px rgba(0,0,0,0.2);}
 
-        /* --- 動畫與祝福頁面樣式 --- */
+        /* 背景大播放按鈕 ( placeholder 圖片 ) */
+        .play-button-placeholder {
+            position: absolute;
+            z-index: -1;
+            font-size: 300px;
+            color: rgba(255,255,255,0.06);
+            user-select: none;
+            pointer-events: none;
+        }
+
+        /* --- 2. 電影級多場景動畫頁面樣式 --- */
         #animation-container {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            /* 你的名字風格：從深紫藍到晚霞粉橘的多層次漸層 */
-            background: linear-gradient(180deg, #04030d 0%, #171138 25%, #421e5c 50%, #852d6a 75%, #d45d6a 100%);
             display: none;
             overflow: hidden;
+            background-color: #04030d; /* 初始深午夜藍 */
         }
 
-        /* 滿天星空點綴 */
+        /* 將多個場景統一置中 */
+        .scene {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1.5s ease-in-out;
+            z-index: 1;
+        }
+        
+        .scene.active { opacity: 1; pointer-events: auto; z-index: 2; }
+
+        /* 場景 1 & 2 的文字 ( 电影感文字 ) */
+        .greeting-text-block {
+            text-align: center;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .greeting-text-block.show-text { animation: fadeInBlurText 3s forwards; }
+
+        .greeting-text-block h2 {
+            font-size: 3.8rem; margin-bottom: 20px; color: #ffffff;
+            text-shadow: 0 0 20px rgba(255,255,255,0.5), 0 0 50px rgba(212, 93, 106, 0.8);
+            letter-spacing: 5px;
+            font-weight: bold;
+        }
+
+        .greeting-text-block p {
+            font-size: 1.4rem; color: #fdfdfd; margin-bottom: 40px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            letter-spacing: 3px;
+        }
+
+        /* --- 場景 1 (新海誠彗星) 的樣式 --- */
+        #scene-1 {
+            background: linear-gradient(180deg, #04030d 0%, #171138 25%, #421e5c 50%, #852d6a 75%, #d45d6a 100%);
+        }
+        
+        /* 滿天星空 */
         .stars {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-image: 
@@ -74,169 +175,268 @@
                 radial-gradient(2px 2px at 25% 50%, rgba(255,255,255,0.8), rgba(0,0,0,0)),
                 radial-gradient(1px 1px at 40% 10%, #fff, rgba(0,0,0,0)),
                 radial-gradient(2.5px 2.5px at 60% 80%, rgba(255,255,255,0.9), rgba(0,0,0,0)),
-                radial-gradient(1px 1px at 75% 30%, #fff, rgba(0,0,0,0)),
-                radial-gradient(1.5px 1.5px at 90% 70%, rgba(255,255,255,0.6), rgba(0,0,0,0));
+                radial-gradient(1px 1px at 75% 30%, #fff, rgba(0,0,0,0));
             background-size: 150px 150px;
             opacity: 0.5;
             animation: twinkle 4s infinite alternate;
         }
 
-        @keyframes twinkle {
-            0% { opacity: 0.3; }
-            100% { opacity: 0.7; }
-        }
-
-        /* 你的名字風格：分裂的雙彗星主體 */
+        /* 彗星分裂墜落特效 */
         .comet-main {
-            position: absolute;
-            top: -300px;
-            left: 70%;
-            width: 8px;
-            height: 400px; /* 超長拖尾 */
-            /* 彗星核心亮白，拖尾轉為青藍色再化為透明粉色 */
+            position: absolute; top: -400px; left: 90%; width: 10px; height: 500px;
             background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(125, 226, 255, 0.9) 15%, rgba(255, 126, 179, 0.4) 60%, transparent 100%);
             border-radius: 50% 50% 0 0;
             box-shadow: 0 -5px 30px #fff, 0 0 50px #7de2ff, 0 0 100px #ff7eb3;
-            transform: rotate(35deg); /* 傾斜墜落角度 */
-            opacity: 0;
-            filter: drop-shadow(0 0 20px rgba(255,255,255,0.8));
+            transform: rotate(35deg); opacity: 0;
         }
-
-        /* 分裂出來的小彗星碎片 */
         .comet-fragment {
-            position: absolute;
-            top: -300px;
-            left: 68%;
-            width: 4px;
-            height: 200px;
+            position: absolute; top: -400px; left: 88%; width: 5px; height: 250px;
             background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255, 126, 179, 0.8) 20%, transparent 100%);
             border-radius: 50% 50% 0 0;
             box-shadow: 0 0 20px #fff, 0 0 40px #ff7eb3;
-            transform: rotate(33deg); /* 角度稍微不同，營造分離感 */
-            opacity: 0;
+            transform: rotate(33deg); opacity: 0;
         }
 
         /* 彗星動畫 */
-        .comet-main.animate {
-            animation: fallMain 4s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
-            animation-delay: 0.5s;
-        }
-        .comet-fragment.animate {
-            animation: fallFragment 4.2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
-            animation-delay: 0.6s;
-        }
+        .comet-main.animate { animation: fallMain 4.5s cubic-bezier(0.25, 0.1, 0.25, 1) forwards; animation-delay: 0.3s;}
+        .comet-fragment.animate { animation: fallFragment 4.7s cubic-bezier(0.25, 0.1, 0.25, 1) forwards; animation-delay: 0.4s;}
 
-        @keyframes fallMain {
-            0% { top: -300px; left: 85%; opacity: 1; transform: rotate(35deg) scale(1); }
-            100% { top: 120vh; left: 10%; opacity: 0; transform: rotate(35deg) scale(1.3); }
+        /* --- 場景 2 (李芯貝同學流星雨) 的樣式 --- */
+        #scene-2 {
+            /* 這裡是目標影片的森林星空背景 ( placeholder 圖片 ) */
+            background-color: #04030d;
+            border: 20px solid rgba(255,255,255,0.05); /* 電影框線 */
+            box-sizing: border-box;
         }
-        @keyframes fallFragment {
-            0% { top: -300px; left: 83%; opacity: 1; transform: rotate(33deg) scale(0.8); }
-            100% { top: 120vh; left: 5%; opacity: 0; transform: rotate(33deg) scale(1); }
-        }
-
-        /* 祝福文字區塊 - 使用 Flexbox 絕對置中解決歪斜問題 */
-        .greeting-wrapper {
+        
+        .scene-2-bg-placeholder {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            font-size: 500px;
+            color: rgba(255,255,255,0.02);
+            user-select: none;
+            pointer-events: none;
+        }
+
+        /* --- 場景 3 (最後祝福) 的樣式 - 粉色系 --- */
+        #scene-3 {
+            background-color: #f8bbd0;
             display: flex;
             flex-direction: column;
+            align-items: center;
+            justify-content: space-around; /* 將內容垂直分散排列 */
+            padding: 80px 0;
+            box-sizing: border-box;
+        }
+
+        /* 生日蛋糕 ( placeholder emoji ) */
+        .cake-emoji-placeholder {
+            font-size: 150px;
+            margin-bottom: 20px;
+        }
+
+        .scene-3-text {
+            text-align: center;
+            color: #c2185b;
+            text-shadow: 0 1px 3px rgba(255,255,255,0.5);
+        }
+        
+        .scene-3-text h2 { 
+            font-size: 4rem; 
+            margin: 0; 
+            font-weight: bold; 
+            letter-spacing: 5px; 
+        }
+        
+        .scene-3-poem {
+            font-size: 1.5rem;
+            color: #d81b60;
+            letter-spacing: 3px;
+            line-height: 2.2;
+            margin: 50px 0;
+            white-space: pre-wrap; /* 保持換行 */
+        }
+
+        /* 最後的「眼巴巴」動物 ( placeholder 圖片 ) */
+        .scene-3-img-placeholder {
+            width: 250px;
+            height: 250px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 5;
-            pointer-events: none; /* 讓點擊事件可以穿透 */
+            font-size: 160px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.05);
+            border: 10px solid #ffffff;
         }
 
-        .greeting-text {
-            text-align: center;
-            opacity: 0;
-            pointer-events: auto; /* 恢復按鈕的點擊能力 */
-        }
-
-        .greeting-text.show {
-            animation: fadeInText 3s forwards;
-            animation-delay: 1.8s; /* 等彗星畫面最美的時候文字浮現 */
-        }
-
-        .greeting-text h2 {
-            font-size: 3.5rem; margin-bottom: 15px; color: #ffffff;
-            text-shadow: 0 0 20px rgba(255,255,255,0.5), 0 0 40px rgba(212, 93, 106, 0.8);
+        .scene-3-text p {
+            font-size: 1.8rem;
+            margin: 0;
             letter-spacing: 4px;
+            color: #ad1457;
             font-weight: bold;
         }
 
-        .greeting-text p {
-            font-size: 1.3rem; color: #fdfdfd; margin-bottom: 40px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-            letter-spacing: 2px;
+        /* 所有的置中文字動畫特效 */
+        @keyframes fadeInBlurText {
+            from { opacity: 0; transform: translateY(20px); filter: blur(10px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0); }
         }
 
-        @keyframes fadeInText {
-            from { opacity: 0; transform: translateY(20px); filter: blur(5px); }
-            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        @keyframes twinkle { 0% { opacity: 0.3; } 100% { opacity: 0.7; } }
+        @keyframes fallMain {
+            0% { top: -400px; left: 85%; opacity: 1; transform: rotate(35deg) scale(1); }
+            100% { top: 120vh; left: 10%; opacity: 0; transform: rotate(35deg) scale(1.3); }
+        }
+        @keyframes fallFragment {
+            0% { top: -400px; left: 83%; opacity: 1; transform: rotate(33deg) scale(0.8); }
+            100% { top: 120vh; left: 5%; opacity: 0; transform: rotate(33deg) scale(1); }
         }
     </style>
 </head>
 <body>
 
-    <div id="login-container">
-        <h1>🎁 神秘禮物 🎁</h1>
-        <p>密碼提示：四位數</p>
-        <input type="password" id="password-input" placeholder="輸入密碼">
-        <br>
-        <button class="btn" onclick="unlockSurprise()">解鎖</button>
-        <p id="error-msg">密碼錯誤！</p>
+    <div id="login-state-wrapper">
+        <div id="login-container">
+            <div class="login-emoji-placeholder">🥺</div>
+            <h1>🎁 神秘驚喜 🎁</h1>
+            <p>請輸入李芯貝同學的專屬密碼</p>
+            <input type="password" id="password-input" placeholder="輸入密碼">
+            <br>
+            <button class="btn" onclick="unlockSurprise()">開啟驚喜</button>
+            <p id="error-msg">密碼錯誤，請再試一次！</p>
+        </div>
+        <div class="play-button-placeholder">▶</div>
     </div>
 
     <div id="animation-container">
-        <div class="stars"></div>
         
-        <div class="comet-main"></div>
-        <div class="comet-fragment"></div>
-        
-        <div class="greeting-wrapper">
-            <div class="greeting-text">
+        <div id="scene-1" class="scene active">
+            <div class="stars"></div>
+            <div class="comet-main"></div>
+            <div class="comet-fragment"></div>
+            
+            <div id="greeting-text-1" class="greeting-text-block">
                 <h2>李芯貝生日快樂！</h2>
                 <p>看著流星劃過夜空，所有好運都在向你靠近。</p>
-                <button class="btn" onclick="replayAnimation()">再看一次</button>
             </div>
         </div>
+        
+        <div id="scene-2" class="scene">
+            <div class="stars" style="opacity: 0.8; animation: twinkle 6s infinite;"></div>
+            <div class="scene-2-bg-placeholder">🌲🌌🌲</div>
+            
+            <div id="greeting-text-2" class="greeting-text-block">
+                <h2>給李芯貝同學的流星雨</h2>
+                <p>願你的21歲，像這時刻流星一樣閃耀。</p>
+            </div>
+        </div>
+        
+        <div id="scene-3" class="scene">
+            
+            <div class="cake-emoji-placeholder">🎂</div>
+            
+            <div class="scene-3-text">
+                <h2>happy birthday!</h2>
+            </div>
+            
+            <div class="scene-3-poem">
+生日祝你，好事追著你；
+溫暖陪著你，病魔躲著你；
+萬事順著你，痛苦遠離你；
+開心跟著你，有事我罩你！
+            </div>
+            
+            <div class="scene-3-img-placeholder">🥺</div>
+            
+            <div class="scene-3-text">
+                <p>眼巴巴</p>
+                <button class="btn" style="margin-top: 50px;" onclick="replayAnimationFlow()">再看一次</button>
+            </div>
+
+            <div class="play-button-placeholder">▶</div>
+        </div>
+
     </div>
 
     <script>
-        const correctPassword = "0516"; 
+        const correctPassword = "0516"; // 保持四位數密碼邏輯
 
         function unlockSurprise() {
             const pwdInput = document.getElementById('password-input').value;
             const errorMsg = document.getElementById('error-msg');
             
             if (pwdInput === correctPassword) {
-                document.getElementById('login-container').style.display = 'none';
+                // 1. 隱藏登入介面
+                document.getElementById('login-state-wrapper').classList.add('hide');
+                
+                // 2. 顯示動畫介面，開啟電影模式
                 document.getElementById('animation-container').style.display = 'block';
 
+                // 3. 延遲一下，再啟動第一個場景的動畫與文字
                 setTimeout(() => {
-                    document.querySelector('.comet-main').classList.add('animate');
-                    document.querySelector('.comet-fragment').classList.add('animate');
-                    document.querySelector('.greeting-text').classList.add('show');
-                }, 100);
+                    startScene1Sequence();
+                }, 1000); // 讓登入頁面完全淡出後再開始
+                
             } else {
                 errorMsg.style.display = 'block';
             }
         }
 
-        function replayAnimation() {
-            const cometMain = document.querySelector('.comet-main');
-            const cometFrag = document.querySelector('.comet-fragment');
-            const text = document.querySelector('.greeting-text');
+        // 場景 1: 新海誠彗星墜落的完整劇情序列
+        function startScene1Sequence() {
+            // 彗星本體落下
+            document.querySelector('.comet-main').classList.add('animate');
+            document.querySelector('.comet-fragment').classList.add('animate');
             
-            cometMain.classList.remove('animate');
-            cometFrag.classList.remove('animate');
-            text.classList.remove('show');
-            
+            // 延遲一下，文字電影感浮現
             setTimeout(() => {
-                cometMain.classList.add('animate');
-                cometFrag.classList.add('animate');
-                text.classList.add('show');
+                document.getElementById('greeting-text-1').classList.add('show-text');
+            }, 1800); // 彗星落到中央時浮現
+
+            // 設定場景 1 結束，切換到場景 2 的時間
+            setTimeout(() => {
+                switchScene('#scene-1', '#scene-2');
+                startScene2Sequence();
+            }, 5500); // 彗星完全落到下方後
+        }
+
+        // 場景 2: 李芯貝同學流星雨的完整劇情序列
+        function startScene2Sequence() {
+            // 這個場景主要是靜態星空配上文字
+            setTimeout(() => {
+                document.getElementById('greeting-text-2').classList.add('show-text');
+            }, 1000);
+
+            // 設定場景 2 結束，切換到場景 3 的時間
+            setTimeout(() => {
+                switchScene('#scene-2', '#scene-3');
+            }, 6000); // 讓對方看完文字後
+        }
+
+        // 幫你把文字完全置中的通用函式
+        function switchScene(fromSceneId, toSceneId) {
+            document.querySelector(fromSceneId).classList.remove('active');
+            document.querySelector(toSceneId).classList.add('active');
+        }
+
+        // 重新播放整個劇情的函式
+        function replayAnimationFlow() {
+            // 1. 重置所有文字和動畫 class
+            document.querySelector('.comet-main').classList.remove('animate');
+            document.querySelector('.comet-fragment').classList.remove('animate');
+            document.getElementById('greeting-text-1').classList.remove('show-text');
+            document.getElementById('greeting-text-2').classList.remove('show-text');
+            
+            // 2. 回到第一個場景
+            switchScene('#scene-3', '#scene-1');
+            
+            // 3. 重新啟動劇情序列
+            setTimeout(() => {
+                startScene1Sequence();
             }, 50);
         }
     </script>
